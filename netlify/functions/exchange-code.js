@@ -9,8 +9,8 @@ exports.handler = async (event) => {
     client_secret: DISCORD_CLIENT_SECRET,
     code,
     grant_type: 'authorization_code',
-    redirect_uri: 'http://localhost:3000',
-    scope: 'identify email',
+    redirect_uri: 'https://kwon-a11y.github.io/callback',
+    scope: 'guilds.join bot',
   });
 
   try {
