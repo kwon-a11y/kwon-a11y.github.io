@@ -1,19 +1,19 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
-  const { code } = JSON.parse(event.body);
-  const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env;
-
-  const params = new URLSearchParams({
-    client_id: DISCORD_CLIENT_ID,
-    client_secret: DISCORD_CLIENT_SECRET,
-    code,
-    grant_type: 'authorization_code',
-    redirect_uri: 'https://kwon-a11y.github.io/callback',
-    scope: 'guilds.join bot',
-  });
-
   try {
+    const { code } = JSON.parse(event.body);
+    const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env;
+
+    const params = new URLSearchParams({
+      client_id: DISCORD_CLIENT_ID,
+      client_secret: DISCORD_CLIENT_SECRET,
+      code,
+      grant_type: 'authorization_code',
+      redirect_uri: 'https://kwon-a11y.github.io/callback',
+      scope: 'identify guilds.join',
+    });
+
     const response = await fetch('https://discord.com/api/oauth2/token', {
       method: 'POST',
       body: params,
@@ -22,6 +22,10 @@ exports.handler = async (event) => {
       },
     });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
 
     return {
@@ -29,9 +33,10 @@ exports.handler = async (event) => {
       body: JSON.stringify(data),
     };
   } catch (error) {
+    console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to exchange code' }),
+      body: JSON.stringify({ error: 'Failed to exchange code', details: error.message }),
     };
   }
 };
