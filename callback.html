@@ -15,6 +15,10 @@
     if (code) {
       fetch('/.netlify/functions/exchange-code', {
         method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ code }),
       })
       .then(response => response.json())

@@ -12,3 +12,9 @@ for = "/*"
 Access-Control-Allow-Origin = "*"
 Access-Control-Allow-Methods = "GET, POST, OPTIONS"
 Access-Control-Allow-Headers = "Content-Type"
+
+[[redirects]]
+from = "/proxy/*"
+to = "https://discord.com/api/:splat"
+status = 200
+force = true
