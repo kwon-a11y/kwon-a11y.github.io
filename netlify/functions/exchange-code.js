@@ -36,11 +36,20 @@ exports.handler = async (event) => {
       },
     });
 
+    console.log('Discord API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers),
+    });
+
+    const responseText = await response.text();
+    console.log('Response Text:', responseText);
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
     }
 
-    const data = await response.json();
+    const data = JSON.parse(responseText);
 
     return {
       statusCode: 200,
