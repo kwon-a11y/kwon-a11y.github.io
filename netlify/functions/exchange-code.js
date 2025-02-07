@@ -1,6 +1,20 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
+
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers,
+      body: '',
+    };
+  }
+
   try {
     const { code } = JSON.parse(event.body);
     const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env;
@@ -30,12 +44,14 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify(data),
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({ error: 'Failed to exchange code', details: error.message }),
     };
   }
