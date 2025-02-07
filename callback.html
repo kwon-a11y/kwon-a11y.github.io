@@ -1,23 +1,37 @@
-const urlParams = new URLSearchParams(window.location.search);
-const code = urlParams.get('code');
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인증 완료</title>
+</head>
+<body>
+    <h1>인증 처리 중</h1>
+    <p id="status">처리 중...</p>
+    <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
-if (code) {
-  fetch('/.netlify/functions/exchange-code', {
-    method: 'POST',
-    body: JSON.stringify({ code }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.access_token) {
-      document.getElementById('status').textContent = '인증이 성공적으로 완료되었습니다.';
+    if (code) {
+      fetch('/.netlify/functions/exchange-code', {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.access_token) {
+          document.getElementById('status').textContent = '인증이 성공적으로 완료되었습니다.';
+        } else {
+          document.getElementById('status').textContent = '인증 처리 중 오류가 발생했습니다.';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('status').textContent = '인증 처리 중 오류가 발생했습니다.';
+      });
     } else {
-      document.getElementById('status').textContent = '인증 처리 중 오류가 발생했습니다.';
+      document.getElementById('status').textContent = '인증 코드가 없습니다.';
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('status').textContent = '인증 처리 중 오류가 발생했습니다.';
-  });
-} else {
-  document.getElementById('status').textContent = '인증 코드가 없습니다.';
-}
+    </script>
+</body>
+</html>
